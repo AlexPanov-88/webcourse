@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>CRUD API</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial;
+    background: #111;
+    color: white;
+    padding: 10px;
+  }
+
+  .header {
+    text-align: center;
+    background: #1e1e2f;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .title {
+    color: #00ffcc;
+    font-weight: bold;
+  }
+
+  .goal {
+    color: #ffcc00;
+    font-size: 13px;
+  }
+
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    height: 80vh;
+  }
+
+  section {
+    border: 1px solid #444;
+    border-radius: 10px;
+    padding: 10px;
+    overflow: auto;
+  }
+
+  input {
+    width: 100%;
+    padding: 5px;
+    margin: 3px 0;
+  }
+
+  button {
+    padding: 5px;
+    margin: 3px;
+    cursor: pointer;
+  }
+
+  .list {
+    background: #222;
+    padding: 5px;
+    margin-top: 5px;
+    height: 200px;
+    overflow: auto;
+    font-size: 13px;
+  }
+
+  .error {
+    color: red;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="title">CRUD операції через HTTP (fetch / axios)</div>
+  <div class="goal">Мета: навчитися отримувати, створювати, оновлювати та видаляти дані через API</div>
+</div>
+
+<div class="container">
+
+<!-- USERS -->
+<section>
+<h3>Користувачі</h3>
+<button onclick="getUsers()">GET</button>
+<div id="users" class="list"></div>
+</section>
+
+<!-- FORM -->
+<section>
+<h3>Форма</h3>
+<input id="name" placeholder="Ім'я">
+<input id="email" placeholder="Email">
+
+<button onclick="createUser()">POST</button>
+<button onclick="updateUser()">PATCH</button>
+<button onclick="deleteUser()">DELETE</button>
+
+<div id="msg"></div>
+</section>
+
+</div>
+
+<script>
+const URL = 'https://jsonplaceholder.typicode.com/users';
+
+// ===== GET =====
+async function getUsers() {
+  try {
+    const res = await fetch(URL);
+    if (!res.ok) throw new Error();
+
+    const data = await res.json();
+
+    document.getElementById('users').innerHTML =
+      data.slice(0,5).map(u =>
+        `<div>${u.id}. ${u.name}</div>`
+      ).join('');
+
+  } catch {
+    showError("Помилка GET");
+  }
+}
+
+
+// ===== POST =====
+async function createUser() {
+  try {
+    const res = await fetch(URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name: val('name'),
+        email: val('email')
+      })
+    });
+
+    if (!res.ok) throw new Error();
+
+    showMsg("Створено!");
+    getUsers();
+
+  } catch {
+    showError("Помилка POST");
+  }
+}
+
+
+// ===== PATCH =====
+async function updateUser() {
+  try {
+    const res = await fetch(URL + '/1', {
+      method: 'PATCH',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name: val('name')
+      })
+    });
+
+    if (!res.ok) throw new Error();
+
+    showMsg("Оновлено!");
+    getUsers();
+
+  } catch {
+    showError("Помилка PATCH");
+  }
+}
+
+
+// ===== DELETE =====
+async function deleteUser() {
+  try {
+    const res = await fetch(URL + '/1', {
+      method: 'DELETE'
+    });
+
+    if (!res.ok) throw new Error();
+
+    showMsg("Видалено!");
+    getUsers();
+
+  } catch {
+    showError("Помилка DELETE");
+  }
+}
+
+
+// ===== HELPERS =====
+function val(id) {
+  return document.getElementById(id).value;
+}
+
+function showMsg(msg) {
+  document.getElementById('msg').innerHTML = msg;
+}
+
+function showError(msg) {
+  document.getElementById('msg').innerHTML = `<span class="error">${msg}</span>`;
+}
+</script>
+
+</body>
+</html>
