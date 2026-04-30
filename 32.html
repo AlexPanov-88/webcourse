@@ -81,14 +81,12 @@
 
 <div class="container">
 
-<!-- USERS -->
 <section>
 <h3>Користувачі</h3>
 <button onclick="getUsers()">GET</button>
 <div id="users" class="list"></div>
 </section>
 
-<!-- FORM -->
 <section>
 <h3>Форма</h3>
 <input id="name" placeholder="Ім'я">
@@ -106,7 +104,6 @@
 <script>
 const URL = 'https://jsonplaceholder.typicode.com/users';
 
-// ===== GET =====
 async function getUsers() {
   try {
     const res = await fetch(URL);
@@ -124,8 +121,6 @@ async function getUsers() {
   }
 }
 
-
-// ===== POST =====
 async function createUser() {
   try {
     const res = await fetch(URL, {
@@ -147,8 +142,6 @@ async function createUser() {
   }
 }
 
-
-// ===== PATCH =====
 async function updateUser() {
   try {
     const res = await fetch(URL + '/1', {
@@ -169,8 +162,6 @@ async function updateUser() {
   }
 }
 
-
-// ===== DELETE =====
 async function deleteUser() {
   try {
     const res = await fetch(URL + '/1', {
@@ -187,8 +178,6 @@ async function deleteUser() {
   }
 }
 
-
-// ===== HELPERS =====
 function val(id) {
   return document.getElementById(id).value;
 }
